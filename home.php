@@ -1,14 +1,5 @@
 <?php
 	require_once "use_session.php";	
-	require_once "../../../cnf.php";
-	require_once "fnc_news.php";
-	//require_once "fnc_general.php";
-	//$_POST
-	//$_GET
-	//var_dump($_POST);
-	//echo $_POST["newsInput"];
-	$amount = 5;
-	$author_name = "Andrus Rinde";	
 ?>
 <!DOCTYPE html>
 <html lang="et">
@@ -33,8 +24,10 @@
     <nav>
         <h2>Olulised lingid</h2>
         <ul>
-			<li><a href="home.php">Avaleht</a></li>
 			<li><a href="?logout=1">Logi välja!</a></li>
+			<li><a href="add_news.php">Lisa uudiseid</a></li>
+			<li><a href="show_news.php">Loe uudiseid</a></li>
+			<li><a href="gallery_photoupload.php">Lae galeriisse fotosid</a></li>
             <li><a href="https://www.tlu.ee/haapsalu">Tallinna Ülikooli Haapsalu kolledž</a></li>
             
         </ul>
@@ -42,8 +35,8 @@
         
 	<main>
 		<section>
-			<h2>Uudised</h2>
-			<?php echo read_news($amount); ?>
+			<h2>Avaleht</h2>
+			
 		</section>
 <?php
 	require_once "pagefooter.php";

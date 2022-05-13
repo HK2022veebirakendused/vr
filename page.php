@@ -1,5 +1,14 @@
 <?php
-	require_once "fnc_general.php";
+	session_start();
+	
+	require_once "../../../cnf.php";
+    require_once "fnc_general.php";
+    require_once "fnc_user.php";
+	$notice = null;
+	$email = null;
+	$email_error = null;
+	$password_error = null;
+	
 	
 	$author_name = "Andrus Rinde";
 	
@@ -73,6 +82,38 @@
 		$semester_meter = "\n <p>Semestri alguseni on jäänud " . (abs($from_semester_begin_days) + 1) ." päeva!</p> \n";
 	}
 	
+	
+	//kontrollime sisestust sisselogimiseks
+    if($_SERVER["REQUEST_METHOD"] === "POST"){
+        if(isset($_POST["login_submit"])){
+			//email
+            if(isset($_POST["email_input"]) and !empty($_POST["email_input"])){
+                $email = test_input(filter_var($_POST["email_input"], FILTER_VALIDATE_EMAIL));
+                if(empty($email)){
+                    $email_error = "Palun sisesta oma e-posti aadress!";
+                }
+            } else {
+                $email_error = "Palun sisesta oma e-posti aadress!";
+            }
+			
+			//parool
+            if(isset($_POST["password_input"]) and !empty($_POST["password_input"])){
+                if(strlen($_POST["password_input"]) < 8){
+                    $password_error = "Sisestatud salasõna on liiga lühike!";
+                }
+            } else {
+                $password_error = "Palun sisesta salasõna!";
+            }
+			
+			if(empty($email_error) and empty($password_error)){
+				$notice = sign_in($email, $_POST["password_input"]);
+			} else {
+				$notice = $email_error ." " .$password_error;
+			}
+			
+		}
+	}
+	
 ?>
 <!DOCTYPE html>
 <html lang="et">
@@ -101,6 +142,16 @@
             
         </ul>
     </nav>
+	
+	<hr>
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <input type="email" name="email_input" placeholder="email ehk kasutajatunnus" value="<?php echo $email; ?>">
+        <input type="password" name="password_input" placeholder="salasõna">
+        <input type="submit" name="login_submit" value="Logi sisse">
+		<span><?php echo $notice; ?></span>
+    </form>
+    <p>Loo omale <a href="add_user.php">kasutajakonto</a></p>
+    <hr>
         
 	<main>
 		<section>

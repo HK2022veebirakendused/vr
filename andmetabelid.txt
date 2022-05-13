@@ -1,3 +1,9 @@
 Uudised
 
 CREATE TABLE `andrusrinde`.`vr22_news` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `title` VARCHAR(140) CHARACTER SET utf8 COLLATE utf8_estonian_ci NOT NULL , `content` VARCHAR(2000) CHARACTER SET utf8 COLLATE utf8_estonian_ci NOT NULL , `expire` DATE NOT NULL , `photoid` INT(11) NULL , `added` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `userid` INT(11) NOT NULL , `deleted` DATETIME NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+Kasutajad
+CREATE TABLE `andrusrinde`.`vr22_users` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `firstname` VARCHAR(30) NOT NULL , `lastname` VARCHAR(30) NOT NULL , `birthdate` DATE NOT NULL , `gender` INT(1) NOT NULL , `email` VARCHAR(100) NOT NULL , `password` VARCHAR(60) NOT NULL , `vr21created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+Galerii fotod
+CREATE TABLE `andrusrinde`.`vr22_photos` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `userid` INT(11) NOT NULL , `filename` VARCHAR(40) NOT NULL , `created` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `alttext` VARCHAR(256) NULL , `privacy` INT(1) NOT NULL , `deleted` DATE NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
