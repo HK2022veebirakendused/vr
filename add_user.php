@@ -130,7 +130,7 @@
 				$notice = sign_up($first_name, $surname, $gender, $birth_date, $email, $_POST["password_input"]);
 			}
 			
-			if{$notice == 1){
+			if($notice == 1){
 				$notice = "Kasutaja loomine õnnestus!";
 			} elseif ($notice == 0){
 				$notice = "Kasutaja loomine ei õnnestunud!";

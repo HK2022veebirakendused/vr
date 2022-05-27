@@ -14,6 +14,7 @@
 	$photo_upload_size_limit = 1024 * 1024 * 1;
 	$gallery_photo_orig_folder = "gallery_upload_orig/";
 	$gallery_photo_normal_folder = "gallery_upload_normal/";
+	$gallery_photo_thumb_folder = "gallery_upload_thumb/";
 	$photo_name_prefix = "vr_";
 	$normal_photo_max_width = 600;
 	$normal_photo_max_height = 400;
@@ -61,17 +62,21 @@
 					$my_temp_image = create_image($_FILES["photo_input"]["tmp_name"], $file_type);
 					$my_normal_image = resize_photo($my_temp_image, $normal_photo_max_width, $normal_photo_max_height);
 					//salvestame vähendatud pildifaili
-					$photo_upload_notice = save_image($my_normal_image, $gallery_photo_normal_folder .$file_name, $file_type);
+					$photo_upload_notice = "Normaalsuuruses " .save_image($my_normal_image, $gallery_photo_normal_folder .$file_name, $file_type);
+					//thumbnail ka
+					$my_thumb_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height);
+					$photo_upload_notice .= " Pisipildi " .save_image($my_thumb_image, $gallery_photo_thumb_folder .$file_name, $file_type);
 					
 					//kopeerime originaali soovitud kohta
 					move_uploaded_file($_FILES["photo_input"]["tmp_name"], $gallery_photo_orig_folder .$file_name);
 					
 					//talletame andmebaasi
-					$photo_upload_notice .= store_photo_data($file_name, $_POST["alt_input"], $_POST["privacy_input"]);
+					$photo_upload_notice .= " " .store_photo_data($file_name, $_POST["alt_input"], $_POST["privacy_input"]);
 					
 					//tühjendame mälu
 					imagedestroy($my_temp_image);
 					imagedestroy($my_normal_image);
+					imagedestroy($my_thumb_image);
 				}
 				
 				

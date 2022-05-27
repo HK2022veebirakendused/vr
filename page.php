@@ -4,6 +4,7 @@
 	require_once "../../../cnf.php";
     require_once "fnc_general.php";
     require_once "fnc_user.php";
+	require_once "fnc_gallery.php";
 	$notice = null;
 	$email = null;
 	$email_error = null;
@@ -154,6 +155,10 @@
     <hr>
         
 	<main>
+		<section>
+			<h2>Uusim avalik foto</h2>
+			<?php echo show_latest_photo(3); ?>
+		</section>
 		<section>
 			<h2>Natuke aja kohta</h2>
 			<p>Lehe avamise hetk: <?php echo $weekday_names_et[$weekday_now - 1] .", " .$full_time_now .", on " .$day_category. ", " .$part_of_day ."."; ?></p>
