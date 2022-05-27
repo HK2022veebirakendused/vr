@@ -3,7 +3,19 @@
 	require_once "../../../cnf.php";
     require_once "fnc_general.php";
 	require_once "fnc_photoupload.php";
+	require_once "classes/Photoupload.class.php";
     
+	//testin klassi kasutamist
+	require_once "classes/Generic.class.php";
+	$generic_object = new Generic(8);
+	//väljastan salajase väärtuse:
+	//echo $generic_object->secret_value;
+	//väljastame avaliku väärtuse
+	echo " Klassi avalik väärtus on: " .$generic_object->just_value;
+	$generic_object->reveal();
+	unset($generic_object);
+	//$generic_object->reveal();
+	
     $photo_error = null;
     $photo_upload_notice = null;
 	$alt_text = null;
@@ -12,13 +24,14 @@
 	$file_type = null;
 	//muutujad, mis võiks olla conf failis
 	$photo_upload_size_limit = 1024 * 1024 * 1;
-	$gallery_photo_orig_folder = "gallery_upload_orig/";
+	/* $gallery_photo_orig_folder = "gallery_upload_orig/";
 	$gallery_photo_normal_folder = "gallery_upload_normal/";
-	$gallery_photo_thumb_folder = "gallery_upload_thumb/";
+	$gallery_photo_thumb_folder = "gallery_upload_thumb/"; */
 	$photo_name_prefix = "vr_";
 	$normal_photo_max_width = 600;
 	$normal_photo_max_height = 400;
 	$thumbnail_width = $thumbnail_height = 100;
+	$watermark = "vr_watermark.png";
 	
 	if($_SERVER["REQUEST_METHOD"] === "POST"){
 		if(isset($_POST["photo_submit"])){
@@ -55,28 +68,43 @@
 				//kui kõik korras, siis laeme üles
 				if($photo_error == null){
 					
+					//võtame kasutusele klassi
+					$upload = new Photoupload($_FILES["photo_input"], $file_type);
+					
 					//loon uue failinime
 					$file_name = create_filename($photo_name_prefix, $file_type);
 					
 					//suuruse muutmine
-					$my_temp_image = create_image($_FILES["photo_input"]["tmp_name"], $file_type);
-					$my_normal_image = resize_photo($my_temp_image, $normal_photo_max_width, $normal_photo_max_height);
+					//$my_temp_image = create_image($_FILES["photo_input"]["tmp_name"], $file_type);
+					//$my_normal_image = resize_photo($my_temp_image, $normal_photo_max_width, $normal_photo_max_height);
+					
+					//suuruse muutmine klassiga
+					$upload->resize_photo($normal_photo_max_width, $normal_photo_max_height);
+					
+					//lisan vesimärgi
+					$upload->add_watermark($watermark);
+					
 					//salvestame vähendatud pildifaili
-					$photo_upload_notice = "Normaalsuuruses " .save_image($my_normal_image, $gallery_photo_normal_folder .$file_name, $file_type);
+					//$photo_upload_notice = "Normaalsuuruses " .save_image($my_normal_image, $gallery_photo_normal_folder .$file_name, $file_type);
+					$photo_upload_notice = "Normaalsuuruses " .$upload->save_image($gallery_photo_normal_folder .$file_name);
+					
 					//thumbnail ka
-					$my_thumb_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height);
-					$photo_upload_notice .= " Pisipildi " .save_image($my_thumb_image, $gallery_photo_thumb_folder .$file_name, $file_type);
+					//$my_thumb_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height);
+					//$photo_upload_notice .= " Pisipildi " .save_image($my_thumb_image, $gallery_photo_thumb_folder .$file_name, $file_type);
+					$upload->resize_photo($thumbnail_width, $thumbnail_height);
+					$photo_upload_notice .= " Pisipildi " .$upload->save_image($gallery_photo_thumb_folder .$file_name);
 					
 					//kopeerime originaali soovitud kohta
-					move_uploaded_file($_FILES["photo_input"]["tmp_name"], $gallery_photo_orig_folder .$file_name);
+					//move_uploaded_file($_FILES["photo_input"]["tmp_name"], $gallery_photo_orig_folder .$file_name);
+					$photo_upload_notice .= $upload->move_orig_photo($gallery_photo_orig_folder .$file_name);
 					
 					//talletame andmebaasi
 					$photo_upload_notice .= " " .store_photo_data($file_name, $_POST["alt_input"], $_POST["privacy_input"]);
 					
 					//tühjendame mälu
-					imagedestroy($my_temp_image);
-					imagedestroy($my_normal_image);
-					imagedestroy($my_thumb_image);
+					//imagedestroy($my_temp_image);
+					//imagedestroy($my_normal_image);
+					//imagedestroy($my_thumb_image);
 				}
 				
 				

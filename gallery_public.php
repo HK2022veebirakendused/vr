@@ -8,7 +8,7 @@
     
     $page = 1;
     $limit = 10;
-    $photo_count = count_public_photos($privacy);
+    $photo_count = count_photos($privacy);
     //kontrollime, mis lehel oleme ja kas selline leht on võimalik
     if(!isset($_GET["page"]) or $_GET["page"] < 1){
         $page = 1;

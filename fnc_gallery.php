@@ -1,5 +1,5 @@
 <?php
-	function count_public_photos($privacy){
+	function count_photos($privacy){
         $photo_count = 0;
         $conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
